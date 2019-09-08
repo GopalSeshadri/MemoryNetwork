@@ -14,8 +14,9 @@ challenges = {
 }
 
 ## Single Supporting Fact Challenge
-train_stories, test_stories, \
-    stories_train, questions_train, answers_train, \
-    stories_test, questions_test, answers_test, \
-    story_maxlen, story_maxsents, question_maxlen, \
-    vocab, vocab_size, word2idx = Preprocess.getData(challenges['single_supporting_fact_10k'], tar)
+ss_train_stories, ss_test_stories, \
+    ss_stories_train, ss_questions_train, ss_answers_train, \
+    ss_stories_test, ss_questions_test, ss_answers_test, \
+    ss_story_maxlen, ss_story_maxsents, ss_question_maxlen, \
+    ss_vocab, ss_vocab_size, ss_word2idx = \
+    Preprocess.getData(challenges['single_supporting_fact_10k'], tar)
