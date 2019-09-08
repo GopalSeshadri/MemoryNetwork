@@ -1,0 +1,6 @@
+/Venv/
+/Embeddings/
+*.csv
+*.pyc
+*.DS_Store
+.env
