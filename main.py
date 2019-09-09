@@ -3,6 +3,9 @@ import pandas as pd
 import keras
 import tarfile
 from preprocess import Preprocess
+from models import Models
+
+EMBEDDING_DIM = 32
 
 tar = tarfile.open('Data/babi_tasks_1-20_v1-2.tar.gz')
 
@@ -20,3 +23,9 @@ ss_train_stories, ss_test_stories, \
     ss_story_maxlen, ss_story_maxsents, ss_question_maxlen, \
     ss_vocab, ss_vocab_size, ss_word2idx = \
     Preprocess.getData(challenges['single_supporting_fact_10k'], tar)
+
+single_model, single_debug_model = \
+    Models.singleModel(ss_story_maxlen, ss_story_maxsents, ss_question_maxlen, ss_vocab_size, EMBEDDING_DIM)
+
+single_model.fit([ss_stories_train, ss_questions_train], ss_answers_train,
+    epochs = 4, batch_size = 32, validation_data = ([ss_stories_test, ss_questions_test], ss_answers_test))
