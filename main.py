@@ -24,6 +24,22 @@ def predictSingleModelAnswer(test_stories, stories_test, questions_test, idx2wor
     print('The predicted anwer is : {}'.format(random_answer))
     print('The correct answer is : {}'.format(a))
 
+def predictDoubleModelAnswer(test_stories, stories_test, questions_test, idx2word, pred_model, debug_model):
+    random_idx = np.random.choice(len(stories_test))
+    random_story = stories_test[random_idx : random_idx + 1]
+    random_question = questions_test[random_idx : random_idx + 1]
+    random_answer = idx2word[np.argmax(pred_model.predict([random_story, random_question]))]
+    random_weights1, random_weights2 = debug_model.predict([random_story, random_question])
+    random_weights1 = random_weights1.flatten()
+    random_weights2 = random_weights2.flatten()
+
+    s, q, a = test_stories[random_idx]
+    for idx, sent in enumerate(s):
+        print('{:.2f}\t{:.2f}\t{}'.format(random_weights1[idx], random_weights2[idx],' '.join(sent)))
+    print('The question is : {}'.format(' '.join(q)))
+    print('The predicted anwer is : {}'.format(random_answer))
+    print('The correct answer is : {}'.format(a))
+
 
 tar = tarfile.open('Data/babi_tasks_1-20_v1-2.tar.gz')
 
@@ -67,3 +83,5 @@ double_model, double_debug_model = \
                     ts_stories_train, ts_questions_train, ts_answers_train, \
                     ts_stories_test, ts_questions_test, ts_answers_test, \
                     EMBEDDING_DIM, NUM_EPOCHS_2, BATCH_SIZE)
+
+predictDoubleModelAnswer(ts_test_stories, ts_stories_test, ts_questions_test, ts_idx2word, double_model, double_debug_model)
