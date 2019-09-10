@@ -17,7 +17,7 @@ class Models:
         summed_across_words_question = Lambda(lambda x: K.sum(x, axis = 1))(embedded_question)
         # print(summed_across_words_question.shape)
         summed_across_words_question = Reshape((1, embedding_dim))(summed_across_words_question)
-        print(summed_across_words_question.shape)
+        # print(summed_across_words_question.shape)
 
         x = Dot(axes = 2)([summed_across_words_story, summed_across_words_question])
         # print(x.shape)
@@ -25,14 +25,14 @@ class Models:
         # print(x.shape)
         x = Activation('softmax')(x)
         sent_weights = Reshape((ss_story_maxsents, 1))(x)
-        print(sent_weights.shape)
+        # print(sent_weights.shape)
 
         x = Dot(axes = 1)([sent_weights, summed_across_words_story])
         # print(x.shape)
         x = Reshape((embedding_dim,))(x)
         # print(x.shape)
         out = Dense(ss_vocab_size, activation = 'softmax')(x)
-        print(out.shape)
+        # print(out.shape)
 
         single_model = Model([input_story, input_question], out)
 

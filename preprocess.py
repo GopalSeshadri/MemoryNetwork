@@ -45,7 +45,7 @@ class Preprocess:
         for each in triples:
             stories.append([[word2idx[word] for word in sent] for sent in each[0]])
             questions.append([word2idx[word] for word in each[1]])
-            answers.append(each[2])
+            answers.append([word2idx[each[2]]])
 
         #padding each sentences in story to length story_maxlen
         stories = [pad_sequences(each, maxlen = story_maxlen) for each in stories]
