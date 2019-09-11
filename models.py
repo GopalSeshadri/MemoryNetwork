@@ -1,3 +1,4 @@
+import numpy as np
 from keras.layers import Input, Embedding, Lambda, Dot
 from keras.layers import Embedding, Dense, Activation, Reshape, Dropout
 from keras.optimizers import Adam, RMSprop
@@ -100,34 +101,38 @@ class Models:
 
         return double_model, double_debug_model
 
-def predictSingleModelAnswer(test_stories, stories_test, questions_test, idx2word, pred_model, debug_model):
-    random_idx = np.random.choice(len(stories_test))
-    random_story = stories_test[random_idx : random_idx + 1]
-    random_question = questions_test[random_idx : random_idx + 1]
-    random_answer = idx2word[np.argmax(pred_model.predict([random_story, random_question]))]
-    random_weights = debug_model.predict([random_story, random_question]).flatten()
+    def predictSingleModelAnswer(test_stories, stories_test, questions_test, idx2word, pred_model, debug_model):
+        random_idx = np.random.choice(len(stories_test))
+        random_story = stories_test[random_idx : random_idx + 1]
+        random_question = questions_test[random_idx : random_idx + 1]
+        random_answer = idx2word[np.argmax(pred_model.predict([random_story, random_question]))]
+        random_weights = debug_model.predict([random_story, random_question]).flatten()
 
-    s, q, a = test_stories[random_idx]
-    for idx, sent in enumerate(s):
-        print('{:.2f}\t{}'.format(random_weights[idx], ' '.join(sent)))
-    print('The question is : {}'.format(' '.join(q)))
-    print('The predicted anwer is : {}'.format(random_answer))
-    print('The correct answer is : {}'.format(a))
-    return s, q, a, random_weights, random_answer
+        s, q, a = test_stories[random_idx]
+        for idx, sent in enumerate(s):
+            print('{:.2f}\t{}'.format(random_weights[idx], ' '.join(sent)))
+            s[idx] = ' '.join(sent)
+        print('The question is : {}'.format(' '.join(q)))
+        print('The predicted anwer is : {}'.format(random_answer))
+        print('The correct answer is : {}'.format(a))
+        q = ' '.join(q)
+        return s, q, a, random_weights, random_answer
 
-def predictDoubleModelAnswer(test_stories, stories_test, questions_test, idx2word, pred_model, debug_model):
-    random_idx = np.random.choice(len(stories_test))
-    random_story = stories_test[random_idx : random_idx + 1]
-    random_question = questions_test[random_idx : random_idx + 1]
-    random_answer = idx2word[np.argmax(pred_model.predict([random_story, random_question]))]
-    random_weights1, random_weights2 = debug_model.predict([random_story, random_question])
-    random_weights1 = random_weights1.flatten()
-    random_weights2 = random_weights2.flatten()
+    def predictDoubleModelAnswer(test_stories, stories_test, questions_test, idx2word, pred_model, debug_model):
+        random_idx = np.random.choice(len(stories_test))
+        random_story = stories_test[random_idx : random_idx + 1]
+        random_question = questions_test[random_idx : random_idx + 1]
+        random_answer = idx2word[np.argmax(pred_model.predict([random_story, random_question]))]
+        random_weights1, random_weights2 = debug_model.predict([random_story, random_question])
+        random_weights1 = random_weights1.flatten()
+        random_weights2 = random_weights2.flatten()
 
-    s, q, a = test_stories[random_idx]
-    for idx, sent in enumerate(s):
-        print('{:.2f}\t{:.2f}\t{}'.format(random_weights1[idx], random_weights2[idx],' '.join(sent)))
-    print('The question is : {}'.format(' '.join(q)))
-    print('The predicted anwer is : {}'.format(random_answer))
-    print('The correct answer is : {}'.format(a))
-    return s, q, a, random_weights1, random_weights2, random_answer
+        s, q, a = test_stories[random_idx]
+        for idx, sent in enumerate(s):
+            print('{:.2f}\t{:.2f}\t{}'.format(random_weights1[idx], random_weights2[idx],' '.join(sent)))
+            s[idx] = ' '.join(sent)
+        print('The question is : {}'.format(' '.join(q)))
+        print('The predicted anwer is : {}'.format(random_answer))
+        print('The correct answer is : {}'.format(a))
+        q = ' '.join(q)
+        return s, q, a, random_weights1, random_weights2, random_answer
