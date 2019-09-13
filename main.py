@@ -14,6 +14,10 @@ BATCH_SIZE = 32
 
 class Main:
     def saveModels():
+        '''
+        This function opens the tarfile, preprocess the data, train models on it and it
+        saves the model in the Models directory.
+        '''
         tar = tarfile.open('Data/babi_tasks_1-20_v1-2.tar.gz')
 
         challenges = {
@@ -62,6 +66,21 @@ class Main:
         Utilities.saveModel(double_debug_model, 'double_debug_model')
 
     def generateAnswer(choice):
+        '''
+        This function takes in a choice as input and it loads the corresponding model of that choice and
+        uses the loaded model to predict the output and the weights.
+
+        Parameters:
+        choice (str) : It can be either 'single' or 'double'
+
+        Returns:
+        story (list) : A list of sentences in the story
+        question (str) : The question
+        correct_answer (str) : The correct answer
+        weights1 (numpy array) : The array of weights for outer hop
+        weights2 (numpy array) : The array of weights of inner hop
+        predicted_answer (str) : The anwer predicted by the model
+        '''
         tar = tarfile.open('Data/babi_tasks_1-20_v1-2.tar.gz')
 
         challenges = {

@@ -90,12 +90,6 @@ app.layout = html.Div([
         dash_table.DataTable(
             id = 'weights-table',
             columns = [{'name' : i, 'id' : i} for i in ['Weights_1', 'Weights_2', 'Sentence']])
-            # style_data_conditional=[{
-            #     'if': {'column_id': 'p',
-            #     'filter_query': '{p} eq 1'},
-            #     'backgroundColor': '#3D9970',
-            #     'color': 'white'
-            # }])
     ], style = {'width' : '25%',
                 'height' : '600px',
                 'display' : 'inline-block',
@@ -114,6 +108,17 @@ app.layout = html.Div([
             Output(component_id = 'weights-table', component_property = 'style_data_conditional')],
             [Input(component_id = 'fetch-button', component_property = 'n_clicks')])
 def affectTextboxAndTable(n_clicks):
+    '''
+    This is a callback function. It takes as input the number of clicks and returns the data for story, question and answer text areas and the weights table.
+
+    Parameters:
+    n_clicks (int) : The number of times the fetch button was clicked
+
+    Returns:
+    values for story-area, question-area, predicted-area and correct-area text areas.
+    weights_table (dict) : The data with weights1, weights2 and sentences for weights DataTable
+    style_data_conditional (list) : A list of dictionary for styling the rows of weights DataTable
+    '''
     choice_dict = {0 : 'single', 1 : 'double'}
 
     choice = np.random.choice(2)
