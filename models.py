@@ -10,6 +10,27 @@ class Models:
                     ss_stories_train, ss_questions_train, ss_answers_train,
                     ss_stories_test, ss_questions_test, ss_answers_test,
                     embedding_dim, num_epochs, batch_size):
+
+        '''
+        This function takes in training data and testing data for stories, question and answers, max lengths of story and question,
+        maximum sentence in story, vocab size, embedding dimension, number of epochs and batch size. Returns the models and debugging
+        models for single fact problem.
+
+        Parameters:
+        ss_story_maxlen (int) : The maximum number of words in sentences in the story
+        ss_story_maxsents (int) : The maximum number of sentences in the story
+        ss_question_maxlen (int) : The maximum number of question
+        ss_vocab_size (int) : The size of the vocabulary
+        ss_stories_train, ss_questions_train, ss_answers_train (numpy array) : A list of padded and vectorized stories, question and answers of training set
+        ss_stories_test, ss_questions_test, ss_answers_test (numpy array) : A list of padded and vectorized stories, question and answers of testing set
+        embedding_dim (int) : The size of embedding
+        num_epochs (int) : The number of epochs
+        batch_size (int) : The size of mini batches
+
+        Returns:
+        single_model (keras model) : The model trained on Single Fact Dataset
+        single_debug_model (keras model) : The debug model for Single Fact Dataset
+        '''
         input_story = Input(shape = (ss_story_maxsents, ss_story_maxlen))
         embedded_story = Embedding(ss_vocab_size, embedding_dim)(input_story)
         summed_across_words_story = Lambda(lambda x: K.sum(x, axis = 2))(embedded_story)
@@ -56,7 +77,26 @@ class Models:
                     ts_stories_train, ts_questions_train, ts_answers_train,
                     ts_stories_test, ts_questions_test, ts_answers_test,
                     embedding_dim, num_epochs, batch_size):
+        '''
+        This function takes in training data and testing data for stories, question and answers, max lengths of story and question,
+        maximum sentence in story, vocab size, embedding dimension, number of epochs and batch size. Returns the models and debugging
+        models for two fact problem.
 
+        Parameters:
+        ss_story_maxlen (int) : The maximum number of words in sentences in the story
+        ss_story_maxsents (int) : The maximum number of sentences in the story
+        ss_question_maxlen (int) : The maximum number of question
+        ss_vocab_size (int) : The size of the vocabulary
+        ss_stories_train, ss_questions_train, ss_answers_train (numpy array) : A list of padded and vectorized stories, question and answers of training set
+        ss_stories_test, ss_questions_test, ss_answers_test (numpy array) : A list of padded and vectorized stories, question and answers of testing set
+        embedding_dim (int) : The size of embedding
+        num_epochs (int) : The number of epochs
+        batch_size (int) : The size of mini batches
+
+        Returns:
+        double_model (keras model) : The model trained on two fact dataset
+        double_debug_model (keras model) : The debug model for two fact dataset
+        '''
         input_story = Input(shape = (ts_story_maxsents, ts_story_maxlen))
         embedded_story = Embedding(ts_vocab_size, embedding_dim)(input_story)
         summed_across_words_story = Lambda(lambda x: K.sum(x, axis = 2))(embedded_story)
@@ -82,7 +122,6 @@ class Models:
 
             return out, summed_across_words_story2, sent_weights
 
-        print('were')
         answer_1, summed_across_words_story, sent_weights_1 = hop(summed_across_words_story, summed_across_words_question)
         answer_2, _, sent_weights_2 = hop(summed_across_words_story, answer_1)
 
@@ -102,6 +141,25 @@ class Models:
         return double_model, double_debug_model
 
     def predictSingleModelAnswer(test_stories, stories_test, questions_test, idx2word, pred_model, debug_model):
+        '''
+        This function takes as input test story data, tokenized stories and question from test set, idx2word, model and debug model
+        of single fact problem and returns the text of story, question, correct answer, weights and predicted answer.
+
+        Parameters:
+        test_stories (list) : The list of list of story text from test set where each entity is a sentence in a story
+        stories_test (list) : The tokenized list of stories from test set
+        questions_test (list) : The tokenized list of questions from test set
+        idx2word (dict) : A dictionary of indices to words in the vocab
+        pred_model (keras model) : The prediction model for single fact problem
+        debug_model (keras model) : The debug model for single fact problem
+
+        Returns:
+        s (str) : A random story picked from test set, with words of tokens merged into single text
+        q (str) : The question of the corresponding random story picked from test set, with words of tokens merged into single text
+        a (str) : The answer for the corresponding story and question
+        random_weights (numpy array) : The sentence weights from the debug model
+        random_answer (str) : The predicted answer
+        '''
         random_idx = np.random.choice(len(stories_test))
         random_story = stories_test[random_idx : random_idx + 1]
         random_question = questions_test[random_idx : random_idx + 1]
@@ -119,6 +177,26 @@ class Models:
         return s, q, a, random_weights, random_answer
 
     def predictDoubleModelAnswer(test_stories, stories_test, questions_test, idx2word, pred_model, debug_model):
+        '''
+        This function takes as input test story data, tokenized stories and question from test set, idx2word, model and debug model
+        of two fact problem and returns the text of story, question, correct answer, weights and predicted answer.
+
+        Parameters:
+        test_stories (list) : The list of list of story text from test set where each entity is a sentence in a story
+        stories_test (list) : The tokenized list of stories from test set
+        questions_test (list) : The tokenized list of questions from test set
+        idx2word (dict) : A dictionary of indices to words in the vocab
+        pred_model (keras model) : The prediction model for two fact problem
+        debug_model (keras model) : The debug model for two fact problem
+
+        Returns:
+        s (str) : A random story picked from test set, with words of tokens merged into single text
+        q (str) : The question of the corresponding random story picked from test set, with words of tokens merged into single text
+        a (str) : The answer for the corresponding story and question
+        random_weights1 (numpy array) : The sentence weights of the first hop from the debug model
+        random_weights2 (numpy array) : The sentence weights of the second hop from the debug model
+        random_answer (str) : The predicted answer
+        '''
         random_idx = np.random.choice(len(stories_test))
         random_story = stories_test[random_idx : random_idx + 1]
         random_question = questions_test[random_idx : random_idx + 1]
