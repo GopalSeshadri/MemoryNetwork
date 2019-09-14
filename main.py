@@ -104,7 +104,8 @@ class Main:
             single_model = Utilities.loadModel('single_model')
             single_debug_model = Utilities.loadModel('single_debug_model')
 
-            story, question, correct_answer, weights2, predicted_answer = Models.predictSingleModelAnswer(ss_test_stories, ss_stories_test, ss_questions_test, ss_idx2word, single_model, single_debug_model)
+            story, question, correct_answer, weights2, predicted_answer = \
+                Models.predictSingleModelAnswer(ss_test_stories, ss_stories_test, ss_questions_test, ss_idx2word, single_model, single_debug_model)
             weights1 = np.zeros(weights2.shape)
 
             K.clear_session()
@@ -125,7 +126,8 @@ class Main:
             double_model = Utilities.loadModel('double_model')
             double_debug_model = Utilities.loadModel('double_debug_model')
 
-            story, question, correct_answer, weights1, weights2, predicted_answer = Models.predictDoubleModelAnswer(ts_test_stories, ts_stories_test, ts_questions_test, ts_idx2word, double_model, double_debug_model)
+            story, question, correct_answer, weights1, weights2, predicted_answer = \
+                Models.predictDoubleModelAnswer(ts_test_stories, ts_stories_test, ts_questions_test, ts_idx2word, double_model, double_debug_model)
 
             K.clear_session()
 
