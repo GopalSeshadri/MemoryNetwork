@@ -1,9 +1,11 @@
 import numpy as np
 import pandas as pd
 import re
+import nltk
 
 from keras.preprocessing.sequence import pad_sequences
 from nltk.tokenize import word_tokenize
+nltk.download('punkt')
 
 class Preprocess:
     def tokenize(sent):
